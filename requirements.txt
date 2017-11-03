@@ -1,3 +1,5 @@
 statsmodels
 tensorflow
 pylint
+scikit-learn
+hyperopt

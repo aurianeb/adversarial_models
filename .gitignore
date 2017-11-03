@@ -61,7 +61,6 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 
 # Flask stuff:
@@ -79,6 +78,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+__pycache__
 
 # pyenv
 .python-version
