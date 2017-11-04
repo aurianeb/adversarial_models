@@ -6,8 +6,8 @@ python:
   - 3.5
 
 branches:
-  except:
-  - sharelatex*
+  only:
+  - master
 
 install:
   - pip install -r requirements.txt
