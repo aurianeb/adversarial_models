@@ -1,5 +1,10 @@
 \documentclass{article}
+\usepackage{graphicx}
+\usepackage{url}
 \usepackage{minted}
+\usepackage{url}
+
+\bibliography{rapport.bib}{}
 \newcommand\thickbar[1]{\accentset{\rule{.4em}{.8pt}}{#1}}
 
 \title{Adversarial Models: Computer Security Issues}
@@ -10,45 +15,82 @@
 \maketitle
 
 \section{Introduction}
-Adversary attacks "trick" machine learning algorithms into making a wrong prediction by adding specific noise to the input data. There are two types of attacks:
+A growing ensemble of tasks are being delegated to machine learning algorithms. Among them, classification of images is a major subset, especially with the recents development of self-driving technology. Recent studies by Google Brain have shown that any machine learning classifier can be tricked to give incorrect predictions, it is possible to trick them to get very different result from what is expected, and sometimes, pretty much any result you want.
+\newline
+We can understand why these results are worrisome: imagine that you could fool an ATM machine and cash a check of \$1,000,000 instead of \$1,000, or fool a self-driving car with a phony stop sign interpreted by the device as a speed limit increase to 200.
+As our world relies more and more on automated classifiers, it is crucial to understand their limitations and the way wrongdoers could exploit them.
+
+\section{Project Outline}
+\subsection{Problem description}
+Adversary attacks "trick" machine learning algorithms into making a wrong prediction by adding specific noise to the input data. The term noise here is not really appropriate, since the perturbation is intended and oriented so as to exploit the model's flaws.
+\newline
+There are two types of attacks:
 
 \begin{itemize}
-    \item Non targeted attacks simply aim at making the algorithm make an erroneous prediction
+    \item Non-targeted attacks simply aim at making the algorithm make an erroneous prediction
     \item Targeted attacks want the algorithm to make a specific prediction
 \end{itemize}
 
-More specifically, we will focus on the problem of image classification. Our goals are to:
+% Adversarial example car figure
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{fig/adversarial_example_car.png}
+\centering
+\caption{Example of an adversarial attack}
+\end{figure}
+
+
+\subsection{Our scope}
+We will focus on the problem of image classification.
+We aim at:
 
 \begin{itemize}
-    \item Implement classification algorithm to tag our image set with good accuracy
-    \item Find out for each algorithm a distribution of noise not discernable by the naked eye that would trick the algorithm into making a wrong prediction (targeted and non targeted)
+    \item Implement different classification algorithms to tag our image set with a decent accuracy
+    \item Find out for each algorithm a distribution of "noise" not perceptible by the naked eye that would trick the algorithm into making a wrong prediction, in the two cases aforementioned:
+    \begin{itemize}
+        \item Non-targeted attacks
+        \item Targeted attacks
+    \end{itemize}
 \end{itemize}
 
-Then we will compare how resistant the algorithms. We will also rate how easy each algorithm is to attack as a function of its parameters. Does increasing biais make an algorithm more resistant?
-
-
+We will then compare how robust the algorithms are with regards to these two types of attacks. We will also rate how easy each algorithm is to attack as a function of its parameters. For instance, we will pay special attention to the bias-variance trade-off: does increasing bias make an algorithm more robust? Intuitively, a very biased algorithm will be easy to trick in a non-targeted fashion, but harder in a targeted-fashion.
+\subsection{Models}
 We plan on testing the following models:
 
 \begin{itemize}
-    \item Neural Networks
-    \item SVM
-    \item Ridge regression and softmax classifier
+    \item Neural Networks (Inception)
+    \item Support Vector Machines
 \end{itemize}
 
-We plan on using the dataset of images provided by Google Brain for the Kaggle challenge "NIPS 2017: Adverserial Learning Developement" :
-\newline
-\url{https://www.kaggle.com/benhamner/adversarial-learning-challenges-getting-started}
+\subsection{Data}
+We plan on using the dataset of images provided by Google Brain for the Kaggle challenge "NIPS 2017: Adversarial Learning Developement" \cite{a2}.
 
+\subsection{Possible developments}
+Can we detect the presence of an adversarial example?
+This is a apparently hard question that we would like to explore. Assume the image is the one of a toaster. If the attack is not subtle and the "noise" visible, a human agent easily identifies the attack: he notices the colored "noise" on the toaster image. But for our model, the image \textbf{is} the one of, say, a whale. The model might even be so sure about it that it will not question its own decision and report a suspicious sample to another program.
+
+We would like to try methods and train models so as to be able to identify whether a suspicious "noise" was added to the original image. In short, "noise" with a certain shape that would make highly doubtful.
 
 \section{Timeline}
 
 As the project lasts only one month, we will have to deploy an efficient methodology. We have decided to work with weekly objectives as it is mentioned in the following :
 \begin{itemize}
-    \item Week 1 : Data Profiling 
-    \item Week 2 : Creation of a classifier that detects attacks on a simple model
-    \item Week 3 : Work on different models
+    \item Week 1 : Model benchmarking and first adversarial experiments
+    \item Week 2 : Bias-variance trade-off
+    \item Week 3 : Development of a model to detect adversarial inputs
     \item Week 4 : Finalization of the results
 \end{itemize}
 
+
+
+\begin{thebibliography}{1}
+
+  \bibitem{a1} Emil Mikhailov; Roman Trusov {\em How Adversarial Attacks Work} 
+  "\url{http://blog.ycombinator.com/how-adversarial-attacks-work/}"
+
+  \bibitem{a2} Google Brain {\em NIPS 2017: Targeted Adversarial Attack} 
+  "\url{https://www.kaggle.com/c/nips-2017-targeted-adversarial-attack}"
+
+
+  \end{thebibliography}
 
 \end{document}
