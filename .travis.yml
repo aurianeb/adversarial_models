@@ -7,7 +7,7 @@ python:
 
 branches:
   except:
-  - sharelatex*
+  - /^sharelatex.*$/
 
 install:
   - pip install -r requirements.txt
