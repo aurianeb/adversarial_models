@@ -2,17 +2,53 @@
 \usepackage{minted}
 \newcommand\thickbar[1]{\accentset{\rule{.4em}{.8pt}}{#1}}
 
-\title{Adversarial Models: Something Here}
-\author{Romain, Auriane and Louis}
-\date{November 2017}
+\title{Adversarial Models: Computer Security Issues}
+\author{Auriane Blarre, Romain Kakko-Chiloff and Louis R\'emus}
+\date{3rd November 2017}
 
 \begin{document}
 \maketitle
 
 \section{Introduction}
-Bla.
-\section{Models}
-\subsection{Model 1}
-\subsection{Model 2}
+Adversary attacks "trick" machine learning algorithms into making a wrong prediction by adding specific noise to the input data. There are two types of attacks:
+
+\begin{itemize}
+    \item Non targeted attacks simply aim at making the algorithm make an erroneous prediction
+    \item Targeted attacks want the algorithm to make a specific prediction
+\end{itemize}
+
+More specifically, we will focus on the problem of image classification. Our goals are to:
+
+\begin{itemize}
+    \item Implement classification algorithm to tag our image set with good accuracy
+    \item Find out for each algorithm a distribution of noise not discernable by the naked eye that would trick the algorithm into making a wrong prediction (targeted and non targeted)
+\end{itemize}
+
+Then we will compare how resistant the algorithms. We will also rate how easy each algorithm is to attack as a function of its parameters. Does increasing biais make an algorithm more resistant?
+
+
+We plan on testing the following models:
+
+\begin{itemize}
+    \item Neural Networks
+    \item SVM
+    \item Ridge regression and softmax classifier
+\end{itemize}
+
+We plan on using the dataset of images provided by Google Brain for the Kaggle challenge "NIPS 2017: Adverserial Learning Developement" :
+\newline
+\url{https://www.kaggle.com/benhamner/adversarial-learning-challenges-getting-started}
+
+
 \section{Timeline}
+
+As the project lasts only one month, we will have to deploy an efficient methodology. We have decided to work with weekly objectives as it is mentioned in the following :
+\begin{itemize}
+    \item Week 1 : Data Profiling 
+    \item Week 2 : Creation of a classifier that detects attacks on a simple model
+    \item Week 3 : Work on different models
+    \item Week 4 : Finalization of the results
+\end{itemize}
+
+
 \end{document}
