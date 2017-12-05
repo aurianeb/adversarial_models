@@ -80,7 +80,7 @@ class InceptionModel(object):
         self.built = False
 
     def __call__(self, x_input):
-        """Constructs model and return probabilities for given input."""
+        """Constructs model_ and return probabilities for given input."""
         reuse = True if self.built else None
         with slim.arg_scope(inception.inception_v3_arg_scope()):
             _, end_points = inception.inception_v3(x_input,
