@@ -3,6 +3,7 @@ import os
 from PIL import Image
 import glob
 import pandas as pd
+import sys
 
 def load_images(input_dir, batch_shape):
   """Read png images from input directory in batches.
@@ -23,28 +24,31 @@ def load_images(input_dir, batch_shape):
   taget_classes = []
   idx = 0
   batch_size = batch_shape[0]
+
+  script_dir = os.path.dirname(os.path.abspath(__file__)) + '/' + input_dir
   
-  labels = pd.read_csv(input_dir + '/dev_dataset.csv', 
+  labels = pd.read_csv(script_dir + '/dev_dataset.csv', 
                        index_col=['ImageId'], 
                        usecols=['ImageId', 'TrueLabel', 'TargetClass'])
   
-  for filename in glob.glob(input_dir + '/*.png'):
+  for filename in glob.glob(script_dir + '/*.png'):
     im = Image.open(filename)
     image = np.array(im.convert('RGB')).astype(np.float) / 255.0
     # Images for inception classifier are normalized to be in [-1, 1] interval.
     images[idx, :, :, :] = image * 2.0 - 1.0
-    filenames.append(os.path.basename(filename))
-    true_labels.append(labels.loc[filename[7:-4]]['TrueLabel'])
-    taget_classes.append(labels.loc[filename[7:-4]]['TargetClass'])
+    image_id = filename.split('/')[-1][:-4]
+    filenames.append(os.path.basename(image_id))
+    true_labels.append(labels.loc[image_id]['TrueLabel'])
+    taget_classes.append(labels.loc[image_id]['TargetClass'])
     idx += 1
     if idx == batch_size:
-      yield images.reshape(batch_size, -1), true_labels, taget_classes
+      yield images.reshape(batch_size, -1), np.array(true_labels), np.array(taget_classes)
       filenames = []
       true_labels = []
       taget_classes = []
       images = np.zeros(batch_shape)
       idx = 0
-  yield images.reshape(batch_size, -1), true_labels, taget_classes
+  yield images.reshape(batch_size, -1), np.array(true_labels), np.array(taget_classes)
 
 
 def save_images(images, filenames, output_dir):
