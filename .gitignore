@@ -3,11 +3,13 @@
 *.DS_Store
 *.hlt
 *.log
-
+*.csv
+*.png
 # Folders
 .idea/
 *.aux
 *.out
+*.ckpt
 
 ### Python template
 __pycache__/
