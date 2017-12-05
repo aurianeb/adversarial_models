@@ -1,9 +1,9 @@
-# Personal
+# Files
+*.zip
 *.DS_Store
 *.hlt
 *.log
 
-# Files
 # Folders
 .idea/
 *.aux

@@ -1,0 +1,3 @@
+adversarial in 3D
+	http://www.labsix.org/physical-objects-that-fool-neural-nets/
+

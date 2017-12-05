@@ -9,13 +9,13 @@
 
 \title{Adversarial Models: Computer Security Issues}
 \author{Auriane Blarre, Romain Kakko-Chiloff and Louis R\'emus}
-\date{November 3rd,  2017}
+\date{November $3^{rd}$,  2017}
 
 \begin{document}
 \maketitle
 
 \section{Introduction}
-A growing ensemble of tasks are being delegated to machine learning algorithms. Among them, classification of images is a major subset, especially with the recents development of self-driving technology. Recent studies by Google Brain have shown that any machine learning classifier can be tricked to give incorrect predictions, it is possible to trick them to get very different result from what is expected, and sometimes, pretty much any result you want.
+A growing ensemble of tasks is being delegated to machine learning algorithms. Among them, classification of images is a major subset, especially with the recent developments of self-driving technology. Recent studies by Google Brain have shown that any machine learning classifier can be tricked to give incorrect predictions. Indeed, it is possible to trick them to get results very different from what is expected, and sometimes, pretty much any result you want.
 \newline
 We can understand why these results are worrisome: imagine that you could fool an ATM machine and cash a check of \$1,000,000 instead of \$1,000, or fool a self-driving car with a phony stop sign interpreted by the device as a speed limit increase to 200.
 As our world relies more and more on automated classifiers, it is crucial to understand their limitations and the way wrongdoers could exploit them.
@@ -38,14 +38,14 @@ There are two types of attacks:
 \caption{Example of an adversarial attack}
 \end{figure}
 
-
+\newpage
 \subsection{Our scope}
 We will focus on the problem of image classification.
 We aim at:
 
 \begin{itemize}
-    \item Implement different classification algorithms to tag our image set with a decent accuracy
-    \item Find out for each algorithm a distribution of "noise" not perceptible by the naked eye that would trick the algorithm into making a wrong prediction, in the two cases aforementioned:
+    \item Implementing different classification algorithms to tag our image set with a decent accuracy
+    \item Finding out for each algorithm a distribution of "noise" not perceptible by the naked eye that would trick the algorithm into making a wrong prediction, in the two cases aforementioned:
     \begin{itemize}
         \item Non-targeted attacks
         \item Targeted attacks
@@ -62,7 +62,10 @@ We plan on testing the following models:
 \end{itemize}
 
 \subsection{Data}
-We plan on using the dataset of images provided by Google Brain for the Kaggle challenge "NIPS 2017: Adversarial Learning Developement" \cite{a2}.
+We plan on using the dataset of images provided by Google Brain for the Kaggle challenge "NIPS 2017: Adversarial Learning Development" \cite{a2}.
+
+\subsection{Tools}
+We will use the common Python libraries \texttt{scikit-learn} and \texttt{tensorflow} \cite{tensorflow}. We will also use the building tool \texttt{travis} and the checker \texttt{pylint} to ensure a clean and modularized code.
 
 \subsection{Possible developments}
 Can we detect the presence of an adversarial example?
@@ -84,13 +87,19 @@ As the project lasts only one month, we will have to deploy an efficient methodo
 
 \begin{thebibliography}{1}
 
-  \bibitem{a1} Emil Mikhailov; Roman Trusov {\em How Adversarial Attacks Work} 
+    \bibitem{a1} Emil Mikhailov; Roman Trusov {\em How Adversarial Attacks Work} 
   "\url{http://blog.ycombinator.com/how-adversarial-attacks-work/}"
-
-  \bibitem{a2} Google Brain {\em NIPS 2017: Targeted Adversarial Attack} 
-  "\url{https://www.kaggle.com/c/nips-2017-targeted-adversarial-attack}"
-
+  
+    \bibitem{a2} Google Brain {\em NIPS 2017: Adversarial Learning Challenges} 
+    \newline
+    \url{https://www.kaggle.com/benhamner/adversarial-learning-challenges-getting-started}
+    
+    \bibitem{tensorflow}
+    The Tensorflow authors.
+    \url{https://www.tensorflow.org/}.
 
   \end{thebibliography}
+
+\listoffigures
 
 \end{document}
