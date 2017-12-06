@@ -5,6 +5,9 @@
 *.log
 *.csv
 *.png
+*.pt
+*byte
+
 # Folders
 .idea/
 *.aux

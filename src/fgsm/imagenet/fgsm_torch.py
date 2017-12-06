@@ -8,12 +8,17 @@ import logging
 import matplotlib
 import torch
 import torchvision.transforms as transforms
+import torchvision.datasets
 
-from PIL import Image
 from torch import nn
 from torch.autograd import Variable
 from torch.autograd.gradcheck import zero_gradients
 from torchvision.models.inception import inception_v3
+from torchvision.models.squeezenet import squeezenet1_1
+
+from PIL import Image
+
+from sklearn.linear_model import LogisticRegression
 
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -25,9 +30,9 @@ def load_image(img_path):
     return img
 
 
-def get_class(image):
+def get_class(image, model):
     x = Variable(image, volatile=True)
-    cls = model_(x).data.max(1)[1].numpy()[0]
+    cls = model(x).data.max(1)[1].numpy()[0]
     return classes.get(cls) or cls
 
 
@@ -83,7 +88,7 @@ def targeted_attack(alpha, image, label):
     x, y = Variable(image, requires_grad=True), Variable(label)
     for step in range(steps):
         zero_gradients(x)
-        out = model_(x)
+        out = inception_model(x)
         _loss = loss(out, y)
         _loss.backward()
         _losses.append(_loss.data[0])
@@ -129,14 +134,18 @@ if __name__ == '__main__':
     norm = float('inf')
     alpha = 0.01
 
-    model_ = inception_v3(pretrained=True, transform_input=True)
+    inception_model = inception_v3(pretrained=True, transform_input=True)
+    squeezenet_model = squeezenet1_1(pretrained=True)
     loss = nn.CrossEntropyLoss()
     # Instantiate the model in some way
-    model_.eval()
+    inception_model.eval()
+    squeezenet_model.eval()
 
     img = load_image('images/ac2a8a4777dbe746.png')
-    # img = load_image('sport_car.png')
+    img = load_image('sport_car.png')
 
+    get_class(img, inception_model)
+    get_class(img, squeezenet_model)
     # Non-targeted
     # adv_img, noise = non_targeted_attack(image=img, model_=model_)
 
