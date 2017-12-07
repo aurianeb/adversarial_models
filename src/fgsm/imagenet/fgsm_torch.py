@@ -107,12 +107,21 @@ def targeted_attack(alpha, image, label):
 def draw_result(img, noise, adv_img):
     fig, ax = plt.subplots(1, 3, figsize=(15, 10))
     orig_class, attack_class = get_class(img), get_class(adv_img)
+
     ax[0].imshow(reverse_trans(img[0]))
     ax[0].set_title('Original image: {}'.format(orig_class.split(',')[0]))
-    ax[1].imshow(noise[0].numpy().transpose(1, 2, 0))
+
+    # TODO understand why try except structure did not work here?
+    # The following catches and solves error for different versions of Matpotlib
+    logging.warning('Direct plot of the error failed, reverting to 0-1 normalized error plot')
+    noise_trans = noise[0].numpy().transpose(1, 2, 0)
+    normalized_noise = (noise_trans - noise_trans.min()) / (noise_trans.max() - noise_trans.min())
+    ax[1].imshow(normalized_noise)
     ax[1].set_title('Attacking noise')
+
     ax[2].imshow(reverse_trans(adv_img[0]))
-    ax[2].set_title('Adversarial example: {}'.format(attack_class))
+    ax[2].set_title('Adversarial image: {}'.format(attack_class))
+
     for i in range(3):
         ax[i].set_axis_off()
     plt.tight_layout()
@@ -123,16 +132,21 @@ if __name__ == '__main__':
     # Load the ImageNet classes
     with open('classes.txt') as f:
         classes = eval(f.read())
+
+    # Auxiliary functions
     # Turns to tensor and ravels
     trans = transforms.Compose([transforms.ToTensor(),
                                 transforms.Lambda(lambda t: t.unsqueeze(0))])
     # Reverse to PIL image
     reverse_trans = lambda x: np.asarray(transforms.ToPILImage()(x))
 
+    # Parameters
     eps = 2 * 8 / 225.
     steps = 40
     norm = float('inf')
     alpha = 0.01
+
+    # Model
 
     inception_model = inception_v3(pretrained=True, transform_input=True)
     loss = nn.CrossEntropyLoss()
@@ -140,7 +154,6 @@ if __name__ == '__main__':
     inception_model.eval()
 
     img = load_image('images/sport_car.png')
-
     # Non-targeted
     # adv_img, noise = non_targeted_attack(image=img, model_=model_)
 
