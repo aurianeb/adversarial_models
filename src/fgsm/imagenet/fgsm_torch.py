@@ -30,9 +30,9 @@ def load_image(img_path):
     return img
 
 
-def get_class(image, model):
+def get_class(image):
     x = Variable(image, volatile=True)
-    cls = model(x).data.max(1)[1].numpy()[0]
+    cls = inception_model(x).data.max(1)[1].numpy()[0]
     return classes.get(cls) or cls
 
 
@@ -135,17 +135,12 @@ if __name__ == '__main__':
     alpha = 0.01
 
     inception_model = inception_v3(pretrained=True, transform_input=True)
-    squeezenet_model = squeezenet1_1(pretrained=True)
     loss = nn.CrossEntropyLoss()
     # Instantiate the model in some way
     inception_model.eval()
-    squeezenet_model.eval()
 
-    img = load_image('images/ac2a8a4777dbe746.png')
-    img = load_image('sport_car.png')
+    img = load_image('images/sport_car.png')
 
-    get_class(img, inception_model)
-    get_class(img, squeezenet_model)
     # Non-targeted
     # adv_img, noise = non_targeted_attack(image=img, model_=model_)
 
