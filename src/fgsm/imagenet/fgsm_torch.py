@@ -4,7 +4,8 @@ Contributors:
     - Louis Rémus
 """
 import logging
-
+import matplotlib
+matplotlib.use('TkAgg')
 import torch
 import torchvision.transforms as transforms
 
@@ -245,7 +246,7 @@ if __name__ == '__main__':
     inception_model.eval()
 
     # img = load_image('images/ac2a8a4777dbe746.png')
-    img = load_image('sport_car.png')
+    img = load_image('images/sport_car.png')
     get_image_class(img, inception_model)
 
     # Non-targeted
