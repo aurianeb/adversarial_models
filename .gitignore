@@ -1,13 +1,18 @@
-# Personal
+# Files
+*.zip
 *.DS_Store
 *.hlt
 *.log
+*.csv
+*.png
+*.pt
+*byte
 
-# Files
 # Folders
 .idea/
 *.aux
 *.out
+*.ckpt
 
 ### Python template
 __pycache__/
