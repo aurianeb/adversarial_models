@@ -4,7 +4,6 @@
 *.hlt
 *.log
 *.csv
-*.png
 *.pt
 *byte
 
@@ -13,6 +12,8 @@
 *.aux
 *.out
 *.ckpt
+images/
+out/
 
 ### Python template
 __pycache__/
