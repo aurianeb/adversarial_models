@@ -108,7 +108,8 @@ def run_non_targeted_attack(step_size, image):
     return adversarial_image, attacking_noise, losses
 
 
-def run_targeted_attack(step_size, image, label):
+# noinspection PyUnboundLocalVariable
+def run_targeted_attack(step_size, image, label, model):
     """
     Performs a targeted attack against a given model
 
@@ -131,7 +132,7 @@ def run_targeted_attack(step_size, image, label):
         # Reset the gradients
         zero_gradients(x)
         # Forward propagation
-        out = inception_model(x)
+        out = model(x)
         # Compute our loss
         loss_tensor = loss(out, y)
         # Record our loss
@@ -223,7 +224,7 @@ if __name__ == '__main__':
     #     plt.close()
     #
     #     # Targeted
-    #     adv_img, noise, losses = run_targeted_attack(step_size=step_size, image=img, label=823)
+    #     adv_img, noise, losses = run_targeted_attack(step_size=step_size, image=img, label=823, model=inception_model)
     #     fig, orig_label, adversarial_label = draw_result(img, noise, adv_img)
     #     plt.savefig('out/targeted/orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
     #     plt.close(fig)
@@ -239,7 +240,7 @@ if __name__ == '__main__':
     # Add the noise to another image in a targeted attack
     images_gen = load_images('images')
     img = next(images_gen)
-    adv_img, noise, losses = run_targeted_attack(step_size=step_size, image=img, label=834)
+    adv_img, noise, losses = run_targeted_attack(step_size=step_size, image=img, label=834, model=inception_model)
     fig, orig_label, adversarial_label = draw_result(img, noise, adv_img)
     plt.savefig('out/innocent/orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
     plt.close(fig)
@@ -255,7 +256,7 @@ if __name__ == '__main__':
     # all_losses = []
     # for step_size_ in step_sizes_:
     #     print('step_size = {}'.format(step_size_))
-    #     adv_img, noise, losses = run_targeted_attack(step_size=step_size_, image=img, label=823)
+    #     adv_img, noise, losses = run_targeted_attack(step_size=step_size_, image=img, label=823, model=inception_model)
     #     all_losses.append(losses)
     #
     # plt.figure()
