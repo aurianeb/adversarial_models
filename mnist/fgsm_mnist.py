@@ -8,9 +8,8 @@ import sys
 import torch
 from torchvision import datasets, transforms
 from torch.autograd import Variable
-from imagenet.fgsm_imagenet import run_targeted_attack, draw_result, run_non_targeted_attack
 # noinspection PyPackageRequirements
-from mnist.mnist_torch import Net
+from mnist_torch import Net
 
 import matplotlib.pyplot as plt
 
