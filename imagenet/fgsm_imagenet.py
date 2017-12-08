@@ -91,10 +91,10 @@ if __name__ == '__main__':
 
     # Test transferrable noise
     # Add the noise to another image in a targeted attack
-    images_gen = load_images('images')
-    img = next(images_gen)
-    adv_img, noise, losses = run_targeted_attack(image=img, label=834, model=inception_model, **kwargs)
-    fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=inception_model)
+    # images_gen = load_images('images')
+    # img = next(images_gen)
+    # adv_img, noise, losses = run_targeted_attack(image=img, label=834, model=inception_model, **kwargs)
+    # fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=inception_model)
     # plt.savefig('out/innocent/orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
     # plt.close(fig)
 

@@ -3,6 +3,7 @@
 Contributors:
     - Louis Rémus
 """
+import os
 import sys
 import torch
 from torchvision import datasets, transforms
