@@ -4,7 +4,7 @@ Contributors:
     - Louis Rémus
 """
 import os
-
+import sys
 from torch import nn
 from torchvision.models.inception import inception_v3
 from torch.autograd import Variable
@@ -12,6 +12,8 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import glob
 
+# Add src path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.fgsm import run_targeted_attack, run_non_targeted_attack, image_to_tensor, tensor_to_image, draw_result
 
 
@@ -93,14 +95,14 @@ if __name__ == '__main__':
     img = next(images_gen)
     adv_img, noise, losses = run_targeted_attack(image=img, label=834, model=inception_model, **kwargs)
     fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=inception_model)
-    plt.savefig('out/innocent/orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
-    plt.close(fig)
+    # plt.savefig('out/innocent/orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
+    # plt.close(fig)
 
-    innocent_img = next(images_gen)
-    corrupted_img = innocent_img + noise
-    fig, orig_label, adversarial_label = draw_result(innocent_img, noise, corrupted_img, model=inception_model)
-    plt.savefig('out/innocent/innocent_orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
-    plt.close(fig)
+    # innocent_img = next(images_gen)
+    # corrupted_img = innocent_img + noise
+    # fig, orig_label, adversarial_label = draw_result(innocent_img, noise, corrupted_img, model=inception_model)
+    # plt.savefig('out/innocent/innocent_orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
+    # plt.close(fig)
 
     # Plots loss evolution
     # step_sizes_ = [0.1, 0.05, 0.01, 0.005, 0.001]

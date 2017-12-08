@@ -3,6 +3,7 @@
 Contributors:
     - Louis Rémus
 """
+import sys
 import torch
 from torchvision import datasets, transforms
 from torch.autograd import Variable
@@ -11,6 +12,11 @@ from imagenet.fgsm_imagenet import run_targeted_attack, draw_result, run_non_tar
 from mnist.mnist_torch import Net
 
 import matplotlib.pyplot as plt
+
+# Add src path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from src.fgsm import run_targeted_attack, run_non_targeted_attack, image_to_tensor, tensor_to_image, draw_result
+
 
 if __name__ == '__main__':
     # Parameters
