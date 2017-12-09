@@ -71,7 +71,6 @@ if __name__ == '__main__':
                 if adversarial_label != predicted_label:
                     # We fooled the classifier
                     count += 1
-
             res[i, j] = count
     print(res)
     perc_res = res / n_images
