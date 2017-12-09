@@ -39,7 +39,7 @@ def random_noise(image, model, eps):
 
 def get_label(image, model):
     """
-    Returns MNIST label for the image as predicted by the inception model
+    Returns label for the image as predicted by the model
     Args:
         image ():
 
@@ -192,8 +192,8 @@ def tensor_to_image(tensor):
 
 
 def plot_heatmap_results(res, x_range, y_range, x_label, y_label):
-    x_range = ['{:.5f}'.format(val) for val in x_range]
-    y_range = ['{:.5f}'.format(val) for val in y_range]
+    x_range = ['{:.2E}'.format(val) for val in x_range]
+    y_range = ['{:.2E}'.format(val) for val in y_range]
 
     fig = plt.figure()
     ax = sns.heatmap(res,

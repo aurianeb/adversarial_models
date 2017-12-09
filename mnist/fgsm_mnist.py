@@ -10,7 +10,7 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 import numpy as np
 # noinspection PyUnresolvedReferences
-from mnist_torch import BaseNet
+from mnist_basenet_torch import BaseNet
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -31,13 +31,13 @@ if __name__ == '__main__':
     # }
     # Load our trained model
     model = BaseNet()
-    model.load_state_dict(torch.load('mnist_basenet_training_normalized.pt'))
+    model.load_state_dict(torch.load('saved_models/mnist_basenet_training_normalized.pt'))
 
     # MNIST data loader
     test_loader = torch.utils.data.DataLoader(
         datasets.MNIST('data', train=False, transform=transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,))
+            # transforms.Normalize((0.1307,), (0.3081,))
         ])),
         batch_size=1, shuffle=True)
 
@@ -50,14 +50,15 @@ if __name__ == '__main__':
         for j, step_size in enumerate(step_size_range):
             kwargs = {
                 'eps': eps,
-                'n_iterations': 200,
+                'n_iterations': 100,
                 'step_size': step_size
             }
-            hparam = 'eps={},step_size={},n_iterations=100'.format(eps, step_size)
+            hparam = 'eps={},step_size={},n_iterations={}'.format(kwargs['eps'],
+                                                                  kwargs['step_size'],
+                                                                  kwargs['n_iterations'])
             print(hparam)
 
             # Run non targeted
-            img, label = next(iter(test_loader))
             count = 0
             iter_count = 0
             for img, label in test_loader:
@@ -71,24 +72,7 @@ if __name__ == '__main__':
                     # We fooled the classifier
                     count += 1
 
-                    # fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=model)
-                    # plt.savefig('out/{}.png'.format(hparam))
-
-                    # Save associated loss
-                    # plt.plot(losses)
-                    # plt.title('Cross Entropy Loss\norig_label={},adversarial_label={}'.format(orig_label, adversarial_label))
-                    # plt.ylabel('loss')
-                    # plt.xlabel('n_iterations')
-                    # plt.savefig('out/loss_{}.png'.format(hparam))
-                    # plt.close()
             res[i, j] = count
-
-            # final_loss = losses[-1]
-            # final_losses.append(final_loss)
-
-            # Losses after convergence
-            # for i, eps in enumerate(eps_range):
-            # plt.plot(final_losses[i], step_size_range, label=eps)
     print(res)
     perc_res = res / n_images
     fig = plot_heatmap_results(res=perc_res,
@@ -96,7 +80,7 @@ if __name__ == '__main__':
                                y_range=eps_range,
                                x_label='step size',
                                y_label='max noise')
-    plt.savefig('out/mnist_successful_adv_images.png')
+    plt.savefig('out//mnist_successful_adv_images_using_not_norm_images_with_norm_model.png')
 
     # Accuracy
 
