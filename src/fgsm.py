@@ -17,7 +17,7 @@ from torchvision.models.inception import inception_v3
 from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
-import glob
+import seaborn as sns
 
 # Global
 # Load the ImageNet classes
@@ -39,7 +39,7 @@ def random_noise(image, model, eps):
 
 def get_label(image, model):
     """
-    Returns MNIST label for the image as predicted by the inception model
+    Returns label for the image as predicted by the model
     Args:
         image ():
 
@@ -259,11 +259,16 @@ def draw_result(image, attacking_noise, adversarial_image, model):
     orig_label = get_label(image, model)
     adversarial_label = get_label(adversarial_image, model)
 
-    # Original image
-    ax[0].imshow(tensor_to_image(image[0]))
+    # Truncate long string labels
     if isinstance(orig_label, str):
         orig_label = orig_label.split(',')[0]
+
+    if isinstance(adversarial_label, str):
+        adversarial_label = adversarial_label.split(',')[0]
+
     ax[0].set_title('Original image: {}'.format(orig_label))
+    # Original image
+    ax[0].imshow(tensor_to_image(image[0]))
 
     noise_trans = attacking_noise[0].numpy().transpose(1, 2, 0)
     normalized_noise = (noise_trans - noise_trans.min()) / (noise_trans.max() - noise_trans.min())
@@ -289,3 +294,18 @@ def image_to_tensor(image):
 
 def tensor_to_image(tensor):
     return np.asarray(transforms.ToPILImage()(tensor))
+
+
+def plot_heatmap_results(res, x_range, y_range, x_label, y_label):
+    x_range = ['{:.2E}'.format(val) for val in x_range]
+    y_range = ['{:.2E}'.format(val) for val in y_range]
+
+    fig = plt.figure()
+    ax = sns.heatmap(res,
+                     annot=True,
+                     xticklabels=x_range,
+                     yticklabels=y_range)
+    ax.set_title('Percentage of successful adversarial images')
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+    return fig

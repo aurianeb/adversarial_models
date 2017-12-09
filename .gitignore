@@ -4,7 +4,6 @@
 *.hlt
 *.log
 *.csv
-*.pt
 *byte
 
 # Folders
@@ -14,6 +13,7 @@
 *.ckpt
 images/
 out/
+data/
 
 ### Python template
 __pycache__/

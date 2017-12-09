@@ -39,6 +39,7 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
 
 parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                     help='how many batches to wait before logging training status')
+
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -85,6 +86,7 @@ optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
 
 
 def train(epoch):
+    model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         if args.cuda:
             data, target = data.cuda(), target.cuda()
@@ -102,6 +104,7 @@ def train(epoch):
 
 
 def test():
+    model.eval()
     test_loss = 0
     correct = 0
     for data, target in test_loader:
@@ -121,12 +124,13 @@ def test():
                                                                                  100. * correct / len(
                                                                                      test_loader.dataset)))
 
+
 if __name__ == '__main__':
 
     for epoch in range(1, args.epochs + 1):
         train(epoch)
         test()
 
-    save_path = 'mnist_logreg_pytorch.pt'
+    save_path = 'saved_models/mnist_logreg_training_normalized.pt'
     torch.save(model.state_dict(), save_path)
     print('Model trained and saved at {}'.format(save_path))
