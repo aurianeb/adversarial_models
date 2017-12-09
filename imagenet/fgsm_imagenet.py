@@ -14,7 +14,8 @@ import glob
 
 # Add src path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src.fgsm import run_targeted_attack, run_non_targeted_attack, image_to_tensor, tensor_to_image, draw_result, random_noise
+from src.fgsm import run_targeted_attack, run_non_targeted_attack, image_to_tensor, tensor_to_image, \
+    draw_result, random_noise, run_non_targeted_attack_v3, get_label
 
 
 def load_image(img_path):
@@ -60,7 +61,7 @@ if __name__ == '__main__':
     img = load_image('images/sport_car.png')
     images_gen = load_images('images')
 
-    for img in images_gen:
+    # for img in images_gen:
         # # Non-targeted
         # adv_img, noise, losses = run_non_targeted_attack(image=img, model=inception_model, **kwargs)
         # fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=inception_model)
@@ -125,4 +126,45 @@ if __name__ == '__main__':
     # Print loss en fonction de step_size step
     # non-normalizer le gradient nous empeche de sortir du minimum apparemment
 
-    # Compare accuracy of non targeted with random noise
+    # adv_img, noise, loss = run_non_targeted_attack(image=img, model=inception_model, **kwargs)
+    # adv_img_v3, noise_v3, loss_v3 = run_non_targeted_attack_v3(image=img, model=inception_model, **kwargs)
+    #
+    # plt.figure()
+    # plt.plot(loss, label='Normalized Model')
+    # plt.plot(loss_v3, label='Non Normalized Model')
+    # plt.title('Cross entropy loss and gradient descent step')
+    # plt.ylabel('loss')
+    # plt.xlabel('n_iterations')
+    # plt.legend()
+    # plt.savefig('out/not_normalized_loss.png')
+    # plt.close()
+
+    # Comparaison with random noise
+    different_label = 0
+    fooled = 0
+    iter_count = 0
+    n_images = 10
+    for img in images_gen:
+        iter_count += 1
+        print(iter_count)
+        if iter_count > n_images:
+            break
+
+        # Model prediction on the image
+        model_label = get_label(img, inception_model)
+
+        # Model prediction on the noisy image
+        adv_img, noise, losses = run_non_targeted_attack(image=img, model=inception_model, **kwargs)
+        adversarial_label = get_label(adv_img, inception_model)
+
+        # Model prediction with random noise
+        adv_img, noise = random_noise(img, inception_model, kwargs['eps'])
+        random_adversarial_label = get_label(adv_img, inception_model)
+
+        if adversarial_label != model_label:
+            different_label += 1
+
+        if model_label != random_adversarial_label:
+            fooled += 1
+
+    print(different_label, fooled, iter_count)
