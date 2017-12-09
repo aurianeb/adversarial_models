@@ -25,6 +25,18 @@ with open('../imagenet/labels.txt') as f:
     labels = eval(f.read())
 
 
+def random_noise(image, model, eps):
+    # Create PyTorch tensor variables
+    x = Variable(image, requires_grad=True)
+
+    noise = torch.Tensor(x.data.shape).uniform_(0, eps)
+    adversarial_image = x.data + noise
+    adversarial_image = torch.clamp(adversarial_image, 0.0, 1.0)
+    x.data = adversarial_image
+
+    return adversarial_image, noise
+
+
 def get_label(image, model):
     """
     Returns MNIST label for the image as predicted by the inception model
