@@ -41,7 +41,6 @@ if __name__ == '__main__':
         ])),
         batch_size=1, shuffle=True)
 
-    final_losses = []
     eps_range = [5 * i / 200 for i in range(1, 11)]
     step_size_range = [0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001, 0.00005, 0.00001]
     res = np.zeros(shape=(len(eps_range), len(step_size_range)))
