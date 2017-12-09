@@ -17,7 +17,7 @@ from torchvision.models.inception import inception_v3
 from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
-import glob
+import seaborn as sns
 
 # Global
 # Load the ImageNet classes
@@ -189,3 +189,18 @@ def image_to_tensor(image):
 
 def tensor_to_image(tensor):
     return np.asarray(transforms.ToPILImage()(tensor))
+
+
+def plot_heatmap_results(res, x_range, y_range, x_label, y_label):
+    x_range = ['{:.5f}'.format(val) for val in x_range]
+    y_range = ['{:.5f}'.format(val) for val in y_range]
+
+    fig = plt.figure()
+    ax = sns.heatmap(res,
+                     annot=True,
+                     xticklabels=x_range,
+                     yticklabels=y_range)
+    ax.set_title('Percentage of successful adversarial images')
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+    return fig
