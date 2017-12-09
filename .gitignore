@@ -13,6 +13,7 @@
 *.ckpt
 images/
 out/
+data/
 
 ### Python template
 __pycache__/
