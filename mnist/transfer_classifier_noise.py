@@ -10,7 +10,7 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 import numpy as np
 # noinspection PyPackageRequirements
-from mnist_torch import Net
+from mnist_torch import BaseNet
 from mnist_logreg_torch import LogReg
 from random import choice
 
@@ -31,11 +31,11 @@ if __name__ == '__main__':
         'step_size': 0.1
     }
     # Load our trained models
-    model = Net()
-    model.load_state_dict(torch.load('mnist_pytorch_R_normalized.pt'))
+    model = BaseNet()
+    model.load_state_dict(torch.load('saved_models/mnist_basenet_training_normalized.pt'))
 
     log_model = LogReg()
-    log_model.load_state_dict(torch.load('mnist_logreg_pytorch.pt'))
+    log_model.load_state_dict(torch.load('saved_models/mnist_logreg_pytorch.pt'))
 
     # MNIST data loader
     test_loader = torch.utils.data.DataLoader(

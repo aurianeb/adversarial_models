@@ -12,9 +12,6 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 from sklearn.linear_model import LogisticRegression
 
-# Global
-save_path = 'mnist_logistic_regression.pickle'
-
 train_loader = torch.utils.data.DataLoader(
     datasets.MNIST('data', train=True, download=True,
                    transform=transforms.Compose([
