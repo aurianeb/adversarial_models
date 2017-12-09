@@ -4,7 +4,6 @@
 *.hlt
 *.log
 *.csv
-*.pt
 *byte
 
 # Folders
