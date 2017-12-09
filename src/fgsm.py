@@ -159,11 +159,16 @@ def draw_result(image, attacking_noise, adversarial_image, model):
     orig_label = get_label(image, model)
     adversarial_label = get_label(adversarial_image, model)
 
-    # Original image
-    ax[0].imshow(tensor_to_image(image[0]))
+    # Truncate long string labels
     if isinstance(orig_label, str):
         orig_label = orig_label.split(',')[0]
+
+    if isinstance(adversarial_label, str):
+        adversarial_label = adversarial_label.split(',')[0]
+
     ax[0].set_title('Original image: {}'.format(orig_label))
+    # Original image
+    ax[0].imshow(tensor_to_image(image[0]))
 
     noise_trans = attacking_noise[0].numpy().transpose(1, 2, 0)
     normalized_noise = (noise_trans - noise_trans.min()) / (noise_trans.max() - noise_trans.min())
