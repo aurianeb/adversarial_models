@@ -60,34 +60,34 @@ if __name__ == '__main__':
     img = load_image('images/sport_car.png')
     images_gen = load_images('images')
 
-    for img in images_gen:
-        # # Non-targeted
-        # adv_img, noise, losses = run_non_targeted_attack(image=img, model=inception_model, **kwargs)
-        # fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=inception_model)
-        # plt.show()
-        # plt.savefig('out/non_targeted/orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
-        # plt.close(fig)
-        #
-        # plt.plot(losses)
-        # plt.title('Cross Entropy Loss\norig_label={},adversarial_label={}'.format(orig_label, adversarial_label))
-        # plt.ylabel('loss')
-        # plt.xlabel('n_iterations')
-        # plt.savefig(
-        #     'out/non_targeted/loss_orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
-        # plt.close()
-        #
-        # # Targeted
-        # adv_img, noise, losses = run_targeted_attack(image=img, label=823, model=inception_model, **kwargs)
-        # fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=inception_model)
-        # plt.savefig('out/targeted/orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
-        # plt.close(fig)
-        #
-        # plt.plot(losses)
-        # plt.title('Cross Entropy Loss\norig_label={},adversarial_label={}'.format(orig_label, adversarial_label))
-        # plt.ylabel('loss')
-        # plt.xlabel('n_iterations')
-        # plt.savefig('out/targeted/loss_orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
-        # plt.close()
+    # for img in images_gen:
+    #     # Non-targeted
+    #     adv_img, noise, losses = run_non_targeted_attack(image=img, model=inception_model, **kwargs)
+    #     fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=inception_model)
+    #     plt.show()
+    #     plt.savefig('out/non_targeted/orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
+    #     plt.close(fig)
+    #
+    #     plt.plot(losses)
+    #     plt.title('Cross Entropy Loss\norig_label={},adversarial_label={}'.format(orig_label, adversarial_label))
+    #     plt.ylabel('loss')
+    #     plt.xlabel('n_iterations')
+    #     plt.savefig(
+    #         'out/non_targeted/loss_orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
+    #     plt.close()
+    #
+    #     # Targeted
+    #     adv_img, noise, losses = run_targeted_attack(image=img, label=823, model=inception_model, **kwargs)
+    #     fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=inception_model)
+    #     plt.savefig('out/targeted/orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
+    #     plt.close(fig)
+    #
+    #     plt.plot(losses)
+    #     plt.title('Cross Entropy Loss\norig_label={},adversarial_label={}'.format(orig_label, adversarial_label))
+    #     plt.ylabel('loss')
+    #     plt.xlabel('n_iterations')
+    #     plt.savefig('out/targeted/loss_orig_label={},adversarial_label={}.png'.format(orig_label, adversarial_label))
+    #     plt.close()
 
     # Test transferrable noise
     # Add the noise to another image in a targeted attack
