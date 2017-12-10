@@ -198,9 +198,9 @@ def tensor_to_image(tensor):
 
 def plot_heatmap_results(res, x_range, y_range, x_label, y_label):
     x_range = ['{:.2E}'.format(val) for val in x_range]
-    y_range = ['{:.2E}'.format(val) for val in y_range]
+    y_range = ['{:.1E}'.format(val) for val in y_range]
 
-    fig = plt.figure()
+    fig = plt.figure(figsize=(18, 9))
     ax = sns.heatmap(res,
                      annot=True,
                      xticklabels=x_range,
