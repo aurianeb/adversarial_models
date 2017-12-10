@@ -59,12 +59,12 @@ def run_non_targeted_attack(step_size, image, model, n_iterations, eps, loss=nn.
     """
     Performs a non-targeted attack against a given model
     Args:
-        eps ():
-        n_iterations ():
-        model ():
-        loss ():
-        step_size (): gradient ascent step size
-        image (): model to fool
+        eps (float): noise infinity bound
+        n_iterations (int): number of iterations for BIM
+        model (object): model to attack
+        loss (object): loss to evaluate our attack
+        step_size (float): gradient ascent step size
+        image (object): image to attack
 
     Returns:
         adversarial_image, attacking_noise
@@ -156,6 +156,7 @@ def run_non_targeted_attack_v2(step_size, image, model, n_iterations, eps, loss=
         x.data = adversarial_image
     return adversarial_image, attacking_noise, losses
 
+
 def run_non_targeted_attack_v3(step_size, image, model, n_iterations, eps, loss=nn.CrossEntropyLoss()):
     """
     Performs a non-targeted attack against a given model
@@ -205,15 +206,20 @@ def run_non_targeted_attack_v3(step_size, image, model, n_iterations, eps, loss=
         x.data = adversarial_image
     return adversarial_image, attacking_noise, losses
 
+
 # noinspection PyUnboundLocalVariable
 def run_targeted_attack(image, label, model, step_size, eps, n_iterations, loss=nn.CrossEntropyLoss()):
     """
     Performs a targeted attack against a given model
 
     Args:
-        step_size (): gradient descent step size
-        image (): image to attack
-        label (): target model
+        label (object): target label
+        eps (float): noise infinity bound
+        n_iterations (int): number of iterations for BIM
+        model (object): model to attack
+        loss (object): loss to evaluate our attack
+        step_size (float): gradient ascent step size
+        image (object): image to attack
 
     Returns:
         adversarial_image, attacking_noise
@@ -268,22 +274,29 @@ def draw_result(image, attacking_noise, adversarial_image, model):
 
     ax[0].set_title('Original image: {}'.format(orig_label))
     # Original image
-    ax[0].imshow(tensor_to_image(image[0]))
+    ax[0].imshow(tensor_to_image(image[0]), cmap='gray')
 
     noise_trans = attacking_noise[0].numpy().transpose(1, 2, 0)
     normalized_noise = (noise_trans - noise_trans.min()) / (noise_trans.max() - noise_trans.min())
     if normalized_noise.shape[2] == 1:
         normalized_noise = normalized_noise[:, :, 0]
-    ax[1].imshow(normalized_noise)
+    ax[1].imshow(normalized_noise, cmap='gray')
     ax[1].set_title('Attacking noise')
 
-    ax[2].imshow(tensor_to_image(adversarial_image[0]))
+    im = ax[2].imshow(tensor_to_image(adversarial_image[0]), cmap='gray')
     ax[2].set_title('Adversarial image: {}'.format(adversarial_label))
 
     for i in range(3):
         ax[i].set_axis_off()
 
     plt.tight_layout()
+
+    # Add colorbar for the MNIST dataset
+    if image.shape[1] == 1:
+        fig.subplots_adjust(right=0.8)
+        cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+        fig.colorbar(im, cax=cbar_ax)
+
     return fig, orig_label, adversarial_label
 
 
