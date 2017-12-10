@@ -23,7 +23,6 @@ from src.fgsm import get_label, run_targeted_attack, run_non_targeted_attack, im
     draw_result, \
     random_noise
 
-
 if __name__ == '__main__':
     # Parameters
     kwargs = {
@@ -179,7 +178,7 @@ if __name__ == '__main__':
     # print("Log fooled with CNN Noise:", 1.0 * cnn_fooled / iter_count)
 
 
-# Comparaison with random noise
+    # Comparaison with random noise
     img, label = next(iter(test_loader))
     different_label = 0
     fooled = 0
