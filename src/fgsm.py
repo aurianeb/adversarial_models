@@ -105,6 +105,106 @@ def run_non_targeted_attack(step_size, image, model, n_iterations, eps, loss=nn.
     return adversarial_image, attacking_noise, losses
 
 
+def run_non_targeted_attack_v2(step_size, image, model, n_iterations, eps, loss=nn.CrossEntropyLoss()):
+    """
+    Performs a non-targeted attack against a given model
+    Args:
+        eps ():
+        n_iterations ():
+        model ():
+        loss ():
+        step_size (): gradient ascent step size
+        image (): model to fool
+
+    Returns:
+        adversarial_image, attacking_noise
+    """
+    # Here we do not care about the value of the target label
+    label = torch.zeros(1, 1)
+    # Record our loss values
+    losses = []
+    # Create PyTorch tensor variables
+    x, y = Variable(image, requires_grad=True), Variable(label)
+    # Perform our gradient ascent
+    for _ in range(n_iterations):
+        # Reset the gradients
+        zero_gradients(x)
+        # Forward propagation
+        out = model(x)
+        # Our prediction
+        y.data = out.data.max(1)[1]
+        # Compute our loss
+        loss_tensor = loss(out, y)
+        # Record our loss
+        losses.append(loss_tensor.data[0])
+        # Back propagation
+        loss_tensor.backward()
+        # Inverse the gradient
+        inv_grad = torch.Tensor(np.linalg.pinv(x.grad[0][0].data.numpy()))
+        # Fixed norm n_iterations not to stay trapped around a local minima
+        normed_grad = step_size * inv_grad
+        # Perform our gradient ascent step
+        step_adv = x.data + normed_grad
+        # Compute our adversarial noise
+        attacking_noise = step_adv - image
+        # Clamp our adversarial noise
+        attacking_noise = torch.clamp(attacking_noise, -eps, eps)
+        # Compute our adversarial image
+        adversarial_image = image + attacking_noise
+        # Normalize it to feed it to inception
+        adversarial_image = torch.clamp(adversarial_image, 0.0, 1.0)
+        x.data = adversarial_image
+    return adversarial_image, attacking_noise, losses
+
+def run_non_targeted_attack_v3(step_size, image, model, n_iterations, eps, loss=nn.CrossEntropyLoss()):
+    """
+    Performs a non-targeted attack against a given model
+    Args:
+        eps ():
+        n_iterations ():
+        model ():
+        loss ():
+        step_size (): gradient ascent step size
+        image (): model to fool
+
+    Returns:
+        adversarial_image, attacking_noise
+    """
+    # Here we do not care about the value of the target label
+    label = torch.zeros(1, 1)
+    # Record our loss values
+    losses = []
+    # Create PyTorch tensor variables
+    x, y = Variable(image, requires_grad=True), Variable(label)
+    # Perform our gradient ascent
+    for _ in range(n_iterations):
+        # Reset the gradients
+        zero_gradients(x)
+        # Forward propagation
+        out = model(x)
+        # Our prediction
+        y.data = out.data.max(1)[1]
+        # Compute our loss
+        loss_tensor = loss(out, y)
+        # Record our loss
+        losses.append(loss_tensor.data[0])
+        # Back propagation
+        loss_tensor.backward()
+        # Fixed norm n_iterations not to stay trapped around a local minima
+        normed_grad = step_size * x.grad.data
+        # Perform our gradient ascent step
+        step_adv = x.data + normed_grad
+        # Compute our adversarial noise
+        attacking_noise = step_adv - image
+        # Clamp our adversarial noise
+        attacking_noise = torch.clamp(attacking_noise, -eps, eps)
+        # Compute our adversarial image
+        adversarial_image = image + attacking_noise
+        # Normalize it to feed it to inception
+        adversarial_image = torch.clamp(adversarial_image, 0.0, 1.0)
+        x.data = adversarial_image
+    return adversarial_image, attacking_noise, losses
+
 # noinspection PyUnboundLocalVariable
 def run_targeted_attack(image, label, model, step_size, eps, n_iterations, loss=nn.CrossEntropyLoss()):
     """
