@@ -13,7 +13,7 @@
 *.ckpt
 images/
 out/
-data/
+imagenet/data/
 
 ### Python template
 __pycache__/
