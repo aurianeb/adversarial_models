@@ -15,7 +15,6 @@ from random import choice
 import pandas as pd
 from mnist_logreg_torch import LogReg
 
-
 import matplotlib.pyplot as plt
 
 # Add src path
@@ -98,7 +97,8 @@ if __name__ == '__main__':
             if target_label != label_from:
                 for img, _ in transfer_from[label_from]:
                     # Model prediction on the noisy image
-                    adv_img, noise_from, losses = run_targeted_attack(image=img, label=target_label, model=model, **kwargs)
+                    adv_img, noise_from, losses = run_targeted_attack(image=img, label=target_label, model=model,
+                                                                      **kwargs)
                     adv_label = get_label(adv_img, model)
 
                     results.ix[target_label, label_from] += 1.0 * (target_label == adv_label)
@@ -176,4 +176,3 @@ if __name__ == '__main__':
                 results.ix[target_label, label_from] *= 1 / count
 
     results.to_csv('out/lr_accuracy_targeted_attack.csv')
-

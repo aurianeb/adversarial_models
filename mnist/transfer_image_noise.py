@@ -23,7 +23,6 @@ from src.fgsm import get_label, run_targeted_attack, run_non_targeted_attack, im
     draw_result, \
     random_noise
 
-
 if __name__ == '__main__':
     # Parameters
     kwargs = {
@@ -70,7 +69,6 @@ if __name__ == '__main__':
                 model_label = get_label(img, model)
 
                 for img_from, _ in transfer_from[label_from]:
-
                     # Model prediction on the noisy image
                     adv_img, noise_from, losses = run_non_targeted_attack(image=img_from, model=model, **kwargs)
                     adv_label = get_label(img_to + noise_from, model)
@@ -79,8 +77,7 @@ if __name__ == '__main__':
 
     results = results / n_images
     results.to_csv('non_targeted_transfer_image_noise_eps_{}_alpha.csv'.format(
-                      kwargs['eps'], kwargs['alpha']))
-
+        kwargs['eps'], kwargs['alpha']))
 
     # Run targeted
     img, label = next(iter(test_loader))
@@ -95,7 +92,7 @@ if __name__ == '__main__':
 
     results = pd.DataFrame(np.zeros((10, 10)))
 
-    for label_to in transfer_to: # Image that receives the noise
+    for label_to in transfer_to:  # Image that receives the noise
         different_labels = [k for k in range(10) if k != label_to]
         for target_label in different_labels:
             print("Label to {}, Label from {}".format(label_to, target_label))
@@ -107,17 +104,17 @@ if __name__ == '__main__':
                 img_from, _ = choice(transfer_from[label_to])
 
                 # Model prediction on the noisy image
-                adv_img, noise_from, losses = run_targeted_attack(image=img_from, label=target_label, model=model, **kwargs)
+                adv_img, noise_from, losses = run_targeted_attack(image=img_from, label=target_label, model=model,
+                                                                  **kwargs)
                 adv_label = get_label(img_to + noise_from, model)
 
                 results.ix[label_to, target_label] += 1.0 * (target_label == adv_label)
 
     results = results / n_images
     results.to_csv('targeted_transfer_image_noise_eps_{}_alpha.csv'.format(
-                  kwargs['eps'], kwargs['step_size']))
+        kwargs['eps'], kwargs['step_size']))
 
-
-# Comparaison with random noise
+    # Comparaison with random noise
     img, label = next(iter(test_loader))
     different_label = 0
     fooled = 0
