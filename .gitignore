@@ -12,7 +12,6 @@
 *.out
 *.ckpt
 images/
-out/
 imagenet/data/
 
 ### Python template
