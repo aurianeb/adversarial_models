@@ -10,7 +10,7 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 import numpy as np
 # noinspection PyPackageRequirements
-from mnist_torch import BaseNet
+from mnist_basenet_torch import BaseNet
 from mnist_logreg_torch import LogReg
 from random import choice
 import pandas as pd

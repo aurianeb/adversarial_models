@@ -11,6 +11,7 @@ from torch.autograd import Variable
 import numpy as np
 # noinspection PyUnresolvedReferences
 from mnist_basenet_torch import BaseNet
+from random import choice
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -41,19 +42,20 @@ if __name__ == '__main__':
             # transforms.Normalize((0.1307,), (0.3081,))
         ])),
         batch_size=1, shuffle=True)
-    #
+
+    # Non targeted
     # final_losses = []
     # eps_range = np.arange(1, 100, 10) / 225.
     # step_size_range = [0.1, 0.05, 0.001, 0.0005, 0.00001]
     # res = np.zeros(shape=(len(eps_range), len(step_size_range)))
     # n_images = 10
     #
-    # for i, eps in enumerate(eps_range):
-    #     # eps_losses = []
-    #     for j, step_size in enumerate(step_size_range):
+    # for j, step_size in enumerate(step_size_range):
+    #     alpha_losses = []
+    #     for i, eps in enumerate(eps_range):
     #         kwargs = {
     #             'eps': eps,
-    #             'n_iterations': 100,
+    #             'n_iterations': 50,
     #             'step_size': step_size
     #         }
     #         hparam = 'eps={},step_size={},n_iterations=100'.format(eps, step_size)
@@ -73,20 +75,38 @@ if __name__ == '__main__':
     #             if adversarial_label != predicted_label:
     #                 count += 1
     #
-    #                 # fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=model)
-    #                 # plt.savefig('out/{}.png'.format(hparam))
+    #                 fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=model)
+    #                 plt.savefig('out/{}.png'.format(hparam))
     #
     #                 # Save associated loss
-    #                 # plt.plot(losses)
-    #                 # plt.title('Cross Entropy Loss\norig_label={},adversarial_label={}'.format(orig_label, adversarial_label))
-    #                 # plt.ylabel('loss')
-    #                 # plt.xlabel('n_iterations')
-    #                 # plt.savefig('out/loss_{}.png'.format(hparam))
-    #                 # plt.close()
+    #                 plt.plot(losses)
+    #                 plt.title('Cross Entropy Loss\norig_label={},adversarial_label={}'.format(orig_label, adversarial_label))
+    #                 plt.ylabel('loss')
+    #                 plt.xlabel('n_iterations')
+    #                 plt.savefig('out/loss_{}.png'.format(hparam))
+    #                 plt.close()
     #         res[i, j] = count
     #
     #         final_loss = losses[-1]
     #     final_losses.append(final_loss)
+    #
+    # # Loss as a function of alpha
+    # for k in range(5):
+    #     plt.plot(eps_range, res[:, k], label='alpha {}'.format(step_size_range[k]))
+    # plt.title('Accuracy and Maximum noise')
+    # plt.ylabel('Accuracy')
+    # plt.xlabel('Epsilon max')
+    # plt.legend()
+    # plt.savefig('out/Accuracy and Maximum noise.png')
+    #
+    # # Loss as a function of epsilon
+    # for k in range(10):
+    #     plt.plot(step_size_range, res[k, :], label='epsilon {}'.format(eps_range[k]))
+    # plt.title('Accuracy and Step size')
+    # plt.ylabel('Accuracy')
+    # plt.xlabel('Step size')
+    # plt.legend()
+    # plt.savefig('out/Accuracy and Step size.png')
     #
     # # Losses after convergence
     # for i, eps in enumerate(eps_range):
@@ -101,19 +121,84 @@ if __name__ == '__main__':
     # ax = fig.add_subplot(111)
     # ax.set_title('Percentage of successful adversarial images')
     # plt.imshow(res / n_images, cmap='hot')
-    #
-    # # ax.set_xticks(step_size_range)
-    # # plt.xticks([itstep_size_range])
-    # # plt.gca().set_xticks(step_size_range)
+
+    # ax.set_xticks(step_size_range)
+    # plt.xticks([itstep_size_range])
+    # plt.gca().set_xticks(step_size_range)
     # ax.set_xlabel('step size')
-    #
-    # # ax.set_yticks(eps_range)
+
+    # ax.set_yticks(eps_range)
     # ax.set_ylabel('max noise')
-    #
+
     # plt.colorbar()
     # plt.savefig('successful_adv_images.png')
 
-<<<<<<< HEAD
+    # Targeted
+    final_losses = []
+    eps_range = np.arange(1, 100, 10) / 225.
+    step_size_range = [0.1, 0.05, 0.001, 0.0005, 0.00001]
+    res = np.zeros(shape=(len(eps_range), len(step_size_range)))
+    n_images = 10
+
+    for j, step_size in enumerate(step_size_range):
+        alpha_losses = []
+        for i, eps in enumerate(eps_range):
+            kwargs = {
+                'eps': eps,
+                'n_iterations': 50,
+                'step_size': step_size
+            }
+            hparam = 'eps={},step_size={},n_iterations=100'.format(eps, step_size)
+            print(hparam)
+
+            # Run non targeted
+            img, label = next(iter(test_loader))
+            count = 0
+            iter_count = 0
+            for img, label in test_loader:
+                iter_count += 1
+                if iter_count > n_images:
+                    break
+                target_label = choice([k for k in range(10) if k != label.numpy()[0]])
+                adv_img, noise, losses = run_targeted_attack(image=img, label=target_label, model=model, **kwargs)
+                adversarial_label = get_label(adv_img, model)
+                predicted_label = get_label(img, model)
+                if adversarial_label == target_label:
+                    count += 1
+
+                    fig, orig_label, adversarial_label = draw_result(img, noise, adv_img, model=model)
+                    plt.savefig('out/{}.png'.format(hparam))
+
+                    # Save associated loss
+                    plt.plot(losses)
+                    plt.title('Cross Entropy Loss\norig_label={},adversarial_label={}'.format(orig_label, adversarial_label))
+                    plt.ylabel('loss')
+                    plt.xlabel('n_iterations')
+                    plt.savefig('out/loss_{}.png'.format(hparam))
+                    plt.close()
+            res[i, j] = count
+
+            final_loss = losses[-1]
+        final_losses.append(final_loss)
+
+    # Loss as a function of alpha
+    for k in range(5):
+        plt.plot(eps_range, res[:, k], label='alpha {}'.format(step_size_range[k]))
+    plt.title('Accuracy and Maximum noise')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epsilon max')
+    plt.legend()
+    plt.savefig('out/Targeted attack - Accuracy and Maximum noise.png')
+
+    # Loss as a function of epsilon
+    for k in range(10):
+        plt.plot(step_size_range, res[k, :], label='epsilon {}'.format(eps_range[k]))
+    plt.title('Accuracy and Step size')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Step size')
+    plt.legend()
+    plt.savefig('out/Targeted attack - Accuracy and Step size.png')
+
     eps_range = np.arange(1, 100, 10) / 225.
     step_size_range = [0.1, 0.05, 0.001, 0.0005, 0.00001]
 
@@ -142,7 +227,7 @@ if __name__ == '__main__':
     plt.ylabel('Loss')
     plt.legend()
     plt.savefig('out/targeted_v1_v2.png')
-=======
+
     eps_range = [5 * i / 200 for i in range(1, 11)]
     step_size_range = [0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001, 0.00005, 0.00001]
     res = np.zeros(shape=(len(eps_range), len(step_size_range)))
@@ -181,24 +266,4 @@ if __name__ == '__main__':
                                y_range=eps_range,
                                x_label='step size',
                                y_label='max noise')
-    plt.savefig('out//mnist_successful_adv_images_using_not_norm_images_with_norm_model.png')
-
-    # Accuracy
-
-    # Run non targeted
-    # n_images = 50
-    # img, label = next(iter(test_loader))
-    # count = 0
-    # iter_count = 0
-    # for img, label in test_loader:
-    #     iter_count += 1
-    #     if iter_count > n_images:
-    #         break
-    #     adv_img, noise, losses = run_non_targeted_attack(image=img, model=model, **kwargs)
-    #     adversarial_label = get_label(adv_img, model)
-    #     predicted_label = get_label(img, model)
-    #     if adversarial_label == predicted_label:
-    #         count += 1
-    #
-    # print("Mean accuracy: ", 1.0 * count / n_images)
->>>>>>> b94040d70fee86a5ddf5896a40733afd1314d6a8
+    plt.savefig('out/mnist_successful_adv_images_using_not_norm_images_with_norm_model.png')

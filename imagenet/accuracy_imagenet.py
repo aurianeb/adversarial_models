@@ -14,7 +14,8 @@ import glob
 
 # Add src path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src.fgsm import run_targeted_attack, run_non_targeted_attack, image_to_tensor, tensor_to_image, draw_result, random_noise
+from src.fgsm import run_targeted_attack, run_non_targeted_attack, image_to_tensor, \
+    tensor_to_image, draw_result, random_noise, get_label
 
 
 def load_image(img_path):
@@ -52,83 +53,72 @@ if __name__ == '__main__':
     }
 
     # Model
-    inception_model = inception_v3(pretrained=True, transform_input=True)
+    model = inception_v3(pretrained=True, transform_input=True)
     # Instantiate the model
-    inception_model.eval()
+    model.eval()
 
     # Load our images
     img = load_image('images/sport_car.png')
     images_gen = load_images('images')
 
-    # Run non targeted
     n_images = 10
+
+    # Run non targeted
     count = 0
-    iter_count = 0
-    images_per_label = dict()
-    count_per_label = dict()
-    for i in range(10):
-        images_per_label[i] = 0
-        count_per_label[i] = 0
 
-    for img in images_gen:
-        iter_count += 1
-        if iter_count > n_images:
-            break
-        adv_img, noise, losses = run_non_targeted_attack(image=img, model=inception_model, **kwargs)
-        adversarial_label = get_label(adv_img, inception_model)
-        predicted_label = get_label(img, inception_model)
-
-        images_per_label[label.numpy()[0]] += 1
+    for it in range(n_images):
+        print("Non targeted iteration {}".format(it))
+        img = next(images_gen)
+        adv_img, noise, losses = run_non_targeted_attack(image=img, model=model, **kwargs)
+        adversarial_label = get_label(adv_img, model)
+        predicted_label = get_label(img, model)
 
         if adversarial_label == predicted_label:
             count += 1
-            count_per_label[label.numpy()[0]] += 1
 
-    print("Mean accuracy noisy: ", 1.0 * count / n_images)
-    print("Image count per label", images_per_label)
-    print("Accurate classification per label", count_per_label)
-
-    accuracy_per_label = dict()
-    for i in range(10):
-        accuracy_per_label[i] = 1.0 * count_per_label[i] / images_per_label[i]
-    print("Accuracy per label", accuracy_per_label)
-
+    print("Mean accuracy non targeted: ", 1.0 * count / n_images)
 
     # Run targeted
-    n_images = 10
     count = 0
-    iter_count = 0
-    images_per_label = dict()
-    count_per_label = dict()
-    for i in range(10):
-        images_per_label[i] = 0
-        count_per_label[i] = 0
 
-    for img in images_gen:
-        iter_count += 1
-        if iter_count > n_images:
-            break
-
-        label = get_label(img, inception_model)
+    for it in range(n_images):
+        print("Targeted iteration {}".format(it))
+        img = next(images_gen)
+        label = get_label(img, model)
 
         # Pick a target label
-        possible_labels = [x for x in range(10) if x != label.numpy()[0]]
-        target_label = choice(possible_labels)
+        target_label = 823
 
-        adv_img, noise, losses = run_targeted_attack(image=img, label=target_label, model=inception_model, **kwargs)
-        adversarial_label = get_label(adv_img, inception_model)
+        adv_img, noise, losses = run_targeted_attack(image=img, label=target_label, model=model, **kwargs)
+        adversarial_label = get_label(adv_img, model)
 
-        images_per_label[label.numpy()[0]] += 1
-
-        if adversarial_label == target_label:
+        if adversarial_label == 'stethoscope':
             count += 1
-            count_per_label[label.numpy()[0]] += 1
 
-    print("Mean accuracy noisy: ", 1.0 * count / n_images)
-    print("Image count per label", images_per_label)
-    print("Accurate classification per label", count_per_label)
+    print("Mean accuracy targeted: ", 1.0 * count / n_images)
 
-    accuracy_per_label = dict()
-    for i in range(10):
-        accuracy_per_label[i] = 1.0 * count_per_label[i] / images_per_label[i]
-    print("Accuracy per label", accuracy_per_label)
+    # Comparaison with random noise
+    different_label = 0
+    fooled = 0
+
+    for it in range(n_images):
+        print("Random iteration {}".format(it))
+        img = next(images_gen)
+        # Model prediction on the image
+        model_label = get_label(img, model)
+
+        # Model prediction on the noisy image
+        adv_img, noise, losses = run_non_targeted_attack(image=img, model=model, **kwargs)
+        adversarial_label = get_label(adv_img, model)
+
+        # Model prediction with random noise
+        adv_img, noise = random_noise(img, model, kwargs['eps'])
+        random_adversarial_label = get_label(adv_img, model)
+
+        if adversarial_label != model_label:
+            different_label += 1
+
+        if model_label != random_adversarial_label:
+            fooled += 1
+
+    print(different_label, fooled)
